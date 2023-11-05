@@ -46,7 +46,7 @@ class ForestFire(Model):
             for y in range(height):
                 new_tree = TreeCell((x, y), self)
                 
-                if self.random.random() < density and y == 49:
+                if self.random.random() < density and y <= 49:
                     # Create a tree in the specified row (y=49)
                     new_tree.condition = "Burned Out"
                     
