@@ -14,7 +14,7 @@ class ForestFire(Model):
             density: What fraction of grid cells have a tree in them.
     """
 
-    def __init__(self, height=100, width=100, density=0.65):
+    def __init__(self, height=50, width=50, density=0.65):
         """
         Create a new forest fire model.
         
@@ -55,7 +55,7 @@ class ForestFire(Model):
 
         self.running = True
         self.datacollector.collect(self)
-        
+        self.step_count = 0
         
 
     def step(self):
@@ -69,6 +69,11 @@ class ForestFire(Model):
         # Halt if no more fire
         if self.count_type(self, "Burned Out") == 0:
             self.running = False
+            
+        self.step_count +=1
+        if self.step_count >= 49:  
+            self.running=False        
+    
 
 
     # staticmethod is a Python decorator that makes a method callable without an instance.
