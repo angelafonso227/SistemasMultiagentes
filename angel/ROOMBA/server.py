@@ -1,61 +1,43 @@
-from mesa.visualization.modules import CanvasGrid, ChartModule, PieChartModule      
-from mesa.visualization.ModularVisualization import ModularServer                 
-#from mesa.visualization.UserParam import UserSettableParameter
-# from mesa.visualization.UserParam import UserSettableParameter
-from mesa.visualization.UserParam import UserSettableParameter
-                   
-from modelo import RoombaModel
-from agentes import Roomba, Tile
+from model import RandomModel, ObstacleAgent, TrashAgent, BatteryAgent
+from mesa.visualization import CanvasGrid, BarChartModule
+from mesa.visualization import ModularServer
 
-colors = {"Dirty": "brown", "Clean": "grey"}
-colorsPieChart = {"Dirty": "brown", "Clean": "grey", "Empty": "#a2ff00"}
-
-def portrayal(agent):
-    if agent is None:
-        return
+def agent_portrayal(agent):
+    if agent is None: return
     
-    portrayal = {
-        "Shape": "circle",
-        "Filled": "true"
-    }
+    portrayal = {"Shape": "circle",
+                 "Filled": "true",
+                 "Layer": 1,
+                 "Color": "red",
+                 "r": 0.5}
 
-    if (isinstance(agent,Roomba)):
-        portrayal["Color"] = "red"
+    if (isinstance(agent, ObstacleAgent)):
+        portrayal["Color"] = "grey"
         portrayal["Layer"] = 1
-        portrayal["r"] = 0.5
-    
-    if (isinstance(agent, Tile)):
-        portrayal["Color"] = colors[agent.status]
+        portrayal["r"] = 0.7
+        
+    if (isinstance(agent, TrashAgent)):
+        portrayal["Color"] = "black"
+        portrayal["Layer"] = 1
+        portrayal["r"] = 0.3
+        
+    if (isinstance(agent, BatteryAgent)):
+        portrayal["Color"] = "green"
         portrayal["Layer"] = 0
         portrayal["r"] = 1
 
+
     return portrayal
 
-dirtyChart = ChartModule(
-    [
-        {"Label": label, "Color": color} for (label, color) in colors.items()
-    ]
-)
+model_params = {"N":1, "width":15, "height":15}
 
-pieChart = PieChartModule(
-    [{"Label": label, "Color": color, "Outline": "black"} for (label, color) in colorsPieChart.items()]
-)
+grid = CanvasGrid(agent_portrayal, 15, 15, 500, 500)
 
-roombas = UserSettableParameter("slider", "Numero de Roombas", 10, 1, 225, 1)
-width =  UserSettableParameter("slider", "Ancho del Grid", 10, 5, 15, 1)
-height = UserSettableParameter("slider", "Alto del Grid", 10, 5, 15, 1)
-numObs = UserSettableParameter("slider", "Porcentaje de Area Sucia", 0.3, 0, 0.9, 0.05)
-maxSteps = UserSettableParameter("number", "Pasos Maximos", 1000, 1, 2000, 1)
+bar_chart = BarChartModule(
+    [{"Label":"Steps", "Color":"#AA0000"}], 
+    scope="agent", sorting="ascending", sort_by="Steps")
 
-modelParam = {
-    "N": roombas,
-    "width": width,
-    "height": height,
-    "numObs": numObs,
-    "maxSteps": maxSteps
-}
-
-grid = CanvasGrid(portrayal, 15, 15, 500, 500)
-
-server = ModularServer(RoombaModel, [grid, dirtyChart, pieChart], "Roomba_Activity", modelParam)
+server = ModularServer(RandomModel, [grid, bar_chart], "Random Agents", model_params)
+                       
+server.port = 8521 # The default
 server.launch()
