@@ -22,7 +22,9 @@ class RandomModel(Model):
         self.running = True 
 
         self.datacollector = DataCollector( 
-            agent_reporters={"Steps": lambda a: a.steps_taken if isinstance(a, RandomAgent) else 0})
+            agent_reporters={"Steps": lambda a: a.steps_taken if isinstance(a, RandomAgent) else 0,
+                             "Life": lambda a: a.Life if isinstance(a, RandomAgent) else 0})
+
 
 
         
@@ -70,5 +72,13 @@ class RandomModel(Model):
 
     def step(self):
         """Advance the model by one step."""
+        
+        if any(agent.Life <= 21 for agent in self.schedule.agents):
+            self.running = False
+        # Mover todos los agentes
         self.schedule.step()
-        self.datacollector.collect(self)
+
+        # Imprimir información sobre los pasos y la vida de los agentes
+        for agent in self.schedule.agents:
+            if isinstance(agent, RandomAgent):
+                print(f"Agent {agent.unique_id}: Steps = {agent.steps_taken}, Life = {agent.Life}")

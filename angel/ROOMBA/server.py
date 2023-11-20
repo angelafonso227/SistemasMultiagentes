@@ -9,7 +9,8 @@ def agent_portrayal(agent):
                  "Filled": "true",
                  "Layer": 1,
                  "Color": "red",
-                 "r": 0.5}
+                 "r": 0.5,
+                 "Life":100}
 
     if (isinstance(agent, ObstacleAgent)):
         portrayal["Color"] = "grey"
@@ -24,14 +25,14 @@ def agent_portrayal(agent):
     if (isinstance(agent, BatteryAgent)):
         portrayal["Color"] = "green"
         portrayal["Layer"] = 0
-        portrayal["r"] = 1
+        portrayal["r"] = 0.9
 
 
     return portrayal
 
-model_params = {"N":1, "width":15, "height":15}
+model_params = {"N":1, "width":10, "height":10}
 
-grid = CanvasGrid(agent_portrayal, 15, 15, 500, 500)
+grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
 bar_chart = BarChartModule(
     [{"Label":"Steps", "Color":"#AA0000"}], 
