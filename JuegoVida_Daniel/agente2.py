@@ -9,14 +9,14 @@ REGLAS = {("Alive", "Alive", "Alive"): "Alive",
           ("Dead", "Dead", "Alive"): "Dead", 
           ("Dead", "Dead", "Dead"): "Alive"}
 
+
 class TreeCell(Agent):
-    
     """
         A tree cell.
         
         Attributes:
             x, y: Grid coordinates
-            condition: Can be "Alive", "On Fire", or "Dead"
+            condition: Can be "Fine", "On Fire", or "Burned Out"
             unique_id: (x,y) tuple.
 
             unique_id isn't strictly necessary here, but it's good practice to give one to each agent anyway.
@@ -35,31 +35,24 @@ class TreeCell(Agent):
         self.condition = "Alive"
         self._next_condition = None
 
-    # def step(self):
-        
-    #     lista=[]
-    #     for neighbor in self.model.grid.iter_neighbors(self.pos, True):
-    #         if neighbor.pos[1] == self.pos[1] + 1:
-    #             lista.append(neighbor.condition)
-    #             tupla= tuple(lista)
-    #             if tupla in REGLAS:
-    #                 self.condition = REGLAS[tupla]
 
+        def step(self):
+            # if self.pos[1] == 49:
+            #     return
+            
+            # Recolectar los estados de los vecinos superiores
+            lista = []
+            for neighbor in self.model.grid.iter_neighbors(self.pos, True):
+                if neighbor.pos[1] == self.pos[1] + 1 and abs(neighbor.pos[0] - self.pos[0]) == 1:
+                    lista.append(neighbor.condition)
+            
+            # Definir las reglas de transición de estados
+            tupla = tuple(lista)
+            if tupla in REGLAS:
+                self._next_condition = REGLAS[tupla]#REGLAS.get(tupla, "Alive")
+            
+            print(f"Next condition for cell at {self.pos[0]}, {self.pos[1]}: {self._next_condition}")
 
-
-    def step(self):
-    # Recolectar las condiciones de los vecinos encima de la celda actual
-        lista = []
-        for neighbor in self.model.grid.iter_neighbors(self.pos, True):
-            if neighbor.pos[1] == self.pos[1] + 1:  # Vecinos directamente encima (arriba)
-                lista.append(neighbor.condition)
-        
-        # Construir la tupla una vez se han recolectado todas las condiciones de los vecinos
-        tupla = tuple(lista)
-        
-        # Verificar si la tupla está en las reglas y actualizar la condición
-        if tupla in REGLAS:
-            self.condition = REGLAS[tupla]
     
     def advance(self):
         """

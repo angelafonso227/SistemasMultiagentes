@@ -2,10 +2,10 @@ from mesa.visualization import CanvasGrid, ChartModule, PieChartModule
 from mesa.visualization import ModularServer
 from mesa.visualization import Slider
 
-from modelJV import ForestFire
+from model2 import ForestFire
 
 # The colors of the portrayal will depend on the tree's condition.
-COLORS = {"Dead": "#000000", "Alive": "#FFFFFF"}
+COLORS = { "Alive": "#000000", "Dead": "#FFFFFF"}
 
 # The portrayal is a dictionary that is used by the visualization server to
 # generate a visualization of the given agent.
@@ -23,7 +23,7 @@ def forest_fire_portrayal(tree):
 # The canvas element will be 500x500 pixels, with each cell being 5x5 pixels.
 # The portrayal method will fill each cell with a representation of the tree
 # that is in that cell.
-canvas_element = CanvasGrid(forest_fire_portrayal, 50, 50, 500, 500)
+canvas_element = CanvasGrid(forest_fire_portrayal, 50, 50, 500, 500) #50 x 50 grid, 500 x 500 pixels
 
 # The chart will plot the number of each type of tree over time.
 tree_chart = ChartModule(
@@ -49,4 +49,4 @@ server = ModularServer(
     ForestFire, [canvas_element, tree_chart, pie_chart], "Forest Fire", model_params
 )
 
-server.launch(port=3001)
+server.launch(port=3000)
