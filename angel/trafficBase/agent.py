@@ -1,4 +1,5 @@
 from mesa import Agent
+import random
 
 class Car(Agent):
     """
@@ -15,12 +16,37 @@ class Car(Agent):
             model: Model reference for the agent
         """
         super().__init__(unique_id, model)
+        self.direction = 4
+        self.steps_taken = 0
 
     def move(self):
-        """ 
-        Determines if the agent can move in the direction that was chosen
-        """        
-        self.model.grid.move_to_empty(self)
+        """
+        Mueve el agente en la dirección indicada por el agente en la misma celda.
+        """
+        x, y = self.pos  # Obtener la posición actual del agente
+
+        # Obtener todos los agentes en la misma celda que el agente Car
+        agents_in_same_cell = self.model.grid.get_cell_list_contents([(x, y)])
+
+        # Obtener la dirección del primer agente en la misma celda (puede ser Road, Traffic_Light u otro)
+        direction_below = getattr(agents_in_same_cell[0], "direction", None) if agents_in_same_cell else None
+
+        # Mapa de direcciones a desplazamientos en la cuadrícula
+        direction_mapping = {
+            "Up": (0, 1),
+            "Down": (0, -1),
+            "Left": (-1, 0),
+            "Right": (1, 0),
+        }
+
+        # Obtener el desplazamiento correspondiente a la dirección en la misma celda que el agente Car
+        displacement = direction_mapping.get(direction_below, (0, 0))
+
+        # Calcular la nueva posición sumando el desplazamiento
+        new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
+
+        # Mover el agente a la nueva posición en la cuadrícula
+        self.model.grid.move_agent(self, new_pos)
 
     def step(self):
         """ 

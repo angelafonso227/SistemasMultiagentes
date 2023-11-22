@@ -1,10 +1,20 @@
 {
     ">" : "Right",
     "<" : "Left",
-    "S" : 15,
-    "s" : 7,
     "#" : "Obstacle",
     "v" : "Down",
     "^" : "Up",
-    "D" : "Destination"
+    "0" : "Destination",
+    "k" : "Up-Right",
+    "4" : "Up-Left",
+    "z" : "Down-Right",
+    "y" : "Down-Left",
+    "R" : [15, "Right"],
+    "L" : [15, "Left"],
+    "U" : [15, "Up"],
+    "D" : [15, "Down"],
+    "r" : [7, "Right"],
+    "l" : [7, "Left"],
+    "u" : [7, "Up"],
+    "d" : [7, "Down"]
 }

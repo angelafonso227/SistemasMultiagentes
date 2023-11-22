@@ -16,6 +16,7 @@ class CityModel(Model):
         # Load the map dictionary. The dictionary maps the characters in the map file to the corresponding agent.
         dataDictionary = json.load(open("city_files/mapDictionary.json"))
 
+        self.num_agents = N
         self.traffic_lights = []
 
         # Load the map file. The map file is a text file where each character represents an agent.
@@ -26,6 +27,12 @@ class CityModel(Model):
 
             self.grid = MultiGrid(self.width, self.height, torus = False) 
             self.schedule = RandomActivation(self)
+            
+            for i in range(self.num_agents):
+                a = Car(i+1000, self) 
+                self.schedule.add(a)
+                pos = (0,0)
+                self.grid.place_agent(a, pos)
 
             # Goes through each character in the map file and creates the corresponding agent.
             for r, row in enumerate(lines):
@@ -47,6 +54,7 @@ class CityModel(Model):
                     elif col == "D":
                         agent = Destination(f"d_{r*self.width+c}", self)
                         self.grid.place_agent(agent, (c, self.height - r - 1))
+                        
 
         self.num_agents = N
         self.running = True
