@@ -25,24 +25,25 @@ class CityModel(Model):
             self.width = len(lines[0])-1
             self.height = len(lines)
 
-            self.grid = MultiGrid(self.width, self.height, torus = False) 
+            self.grid = MultiGrid(self.width, self.height, torus=False) 
             self.schedule = RandomActivation(self)
             
             for i in range(self.num_agents):
-                a = Car(i+1000, self) 
+                a = Car(i + 1000, self) 
                 self.schedule.add(a)
-                pos = (0,0)
+                pos = (0, 0)
                 self.grid.place_agent(a, pos)
 
             # Goes through each character in the map file and creates the corresponding agent.
             for r, row in enumerate(lines):
                 for c, col in enumerate(row):
-                    if col in ["v", "^", ">", "<"]:
+                    if col in ["v", "^", ">", "<", "1", "2", "3", "4"]:
                         agent = Road(f"r_{r*self.width+c}", self, dataDictionary[col])
                         self.grid.place_agent(agent, (c, self.height - r - 1))
 
-                    elif col in ["S", "s"]:
-                        agent = Traffic_Light(f"tl_{r*self.width+c}", self, False if col == "S" else True, int(dataDictionary[col]))
+                    elif col in ["R", "r", "L", "l", "U", "u", "D", "d"]:
+                        change_frequency = 15 if col in ["R", "L", "U", "D"] else 7
+                        agent = Traffic_Light(f"tl_{r*self.width+c}", self, False if col in ["R", "L", "U", "D"] else True, dataDictionary[col], change_frequency)
                         self.grid.place_agent(agent, (c, self.height - r - 1))
                         self.schedule.add(agent)
                         self.traffic_lights.append(agent)
@@ -51,14 +52,23 @@ class CityModel(Model):
                         agent = Obstacle(f"ob_{r*self.width+c}", self)
                         self.grid.place_agent(agent, (c, self.height - r - 1))
 
-                    elif col == "D":
+                    elif col == "F":
                         agent = Destination(f"d_{r*self.width+c}", self)
                         self.grid.place_agent(agent, (c, self.height - r - 1))
-                        
-
-        self.num_agents = N
+        
         self.running = True
+
+    def add_car(self):
+        new_agent = Car(self.num_agents + 1000, self)
+        self.num_agents += 1
+        pos = (0, 0)
+        self.grid.place_agent(new_agent, pos)
+        self.schedule.add(new_agent)
 
     def step(self):
         '''Advance the model by one step.'''
+        # Añade un nuevo carro cada 4 pasos
+        if self.schedule.steps % 4 == 0:
+            self.add_car()
+
         self.schedule.step()
