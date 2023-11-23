@@ -29,7 +29,11 @@ class Car(Agent):
         agents_in_same_cell = self.model.grid.get_cell_list_contents([(x, y)])
 
         # Obtener la dirección del primer agente en la misma celda (puede ser Road, Traffic_Light u otro)
-        direction_below = getattr(agents_in_same_cell[0], "direction", None) if agents_in_same_cell else None
+        if agents_in_same_cell:
+            direction_below = getattr(agents_in_same_cell[0], "direction", None)
+        else:
+            direction_below = None
+        
 
         # Mapa de direcciones a desplazamientos en la cuadrícula
         direction_mapping = {
@@ -41,6 +45,23 @@ class Car(Agent):
 
         # Obtener el desplazamiento correspondiente a la dirección en la misma celda que el agente Car
         displacement = direction_mapping.get(direction_below, (0, 0))
+        
+        if direction_below == "Up-Left":
+            displacement = random.choice([(0, 1), (-1, 0)])
+            new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
+            
+        if direction_below == "Up-Right":
+            displacement = random.choice([(0, 1), (1, 0)])
+            new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
+            
+        if direction_below == "Down-Right":
+            displacement = random.choice([(0, -1), (1, 0)])
+            new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
+            
+        if direction_below == "Down-Left":
+            displacement = random.choice([(0, -1), (-1, 0)])
+            new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
+            
 
         # Calcular la nueva posición sumando el desplazamiento
         new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
@@ -53,12 +74,13 @@ class Car(Agent):
         Determines the new direction it will take, and then moves
         """
         self.move()
+        
 
 class Traffic_Light(Agent):
     """
     Traffic light. Where the traffic lights are in the grid.
     """
-    def __init__(self, unique_id, model, state = False, timeToChange = 10):
+    def __init__(self, unique_id, model, state = False, direction= "Left", time_to_change=5):
         super().__init__(unique_id, model)
         """
         Creates a new Traffic light.
@@ -69,14 +91,15 @@ class Traffic_Light(Agent):
             timeToChange: After how many step should the traffic light change color 
         """
         self.state = state
-        self.timeToChange = timeToChange
+        self.direction = direction
+        self.time_to_change= time_to_change
 
     def step(self):
         """ 
-        To change the state (green or red) of the traffic light in case you consider the time to change of each traffic light.
+        To change the state (green or red) of the traffic light every time_to_change steps.
         """
-        if self.model.schedule.steps % self.timeToChange == 0:
-            self.state = not self.state
+        if self.model.schedule.steps % self.time_to_change == 0:
+            self.state = not self.state  # Cambiar el estado del semáforo cada time_to_change pasos
 
 class Destination(Agent):
     """
