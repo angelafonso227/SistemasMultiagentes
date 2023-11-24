@@ -33,6 +33,10 @@ class Car(Agent):
             direction_below = getattr(agents_in_same_cell[0], "direction", None)
         else:
             direction_below = None
+            
+        traffic_light = next((agent for agent in agents_in_same_cell if isinstance(agent, Traffic_Light)), None)
+        if traffic_light and not traffic_light.state:  # If there is a red traffic light, do not move
+            return
         
 
         # Mapa de direcciones a desplazamientos en la cuadrícula
@@ -65,9 +69,12 @@ class Car(Agent):
 
         # Calcular la nueva posición sumando el desplazamiento
         new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
-
-        # Mover el agente a la nueva posición en la cuadrícula
-        self.model.grid.move_agent(self, new_pos)
+        
+        if any(isinstance(agent, Car) for agent in self.model.grid.get_cell_list_contents([new_pos])):
+            print("Atorado")  # Puedes poner aquí el código que deseas ejecutar cuando la nueva posición está ocupada por otro agente Car
+        else:
+            # Mover el agente a la nueva posición en la cuadrícula
+            self.model.grid.move_agent(self, new_pos)
 
     def step(self):
         """ 
