@@ -61,14 +61,19 @@ class CityModel(Model):
     def add_car(self):
         new_agent = Car(self.num_agents + 1000, self)
         self.num_agents += 1
-        pos = (0, 0)
+        #pos = (0, 0)
+        corner_options = [(0, 0), (0, self.grid.height-1), (self.grid.width-1, 0), (self.grid.width-1, self.grid.height-1)]
+        pos = random.choice(corner_options)
         self.grid.place_agent(new_agent, pos)
         self.schedule.add(new_agent)
 
     def step(self):
         '''Advance the model by one step.'''
         # Añade un nuevo carro cada 4 pasos
-        if self.schedule.steps % 4 == 0:
-            self.add_car()
+        if self.schedule.steps % 10 == 0:
+            if self.num_agents <=30:
+                self.add_car()
+            else: 
+                pass
 
         self.schedule.step()
