@@ -1,7 +1,11 @@
+import random
+import time
 from agent import *
 from model import CityModel
 from mesa.visualization import CanvasGrid, BarChartModule
 from mesa.visualization import ModularServer
+
+random.seed(time.time())
 
 def agent_portrayal(agent):
     if agent is None: return

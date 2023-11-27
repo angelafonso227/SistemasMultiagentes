@@ -33,6 +33,8 @@ class CityModel(Model):
                 self.schedule.add(a)
                 pos = (0, 0)
                 self.grid.place_agent(a, pos)
+                
+            self.destinations_positions = []
 
             # Goes through each character in the map file and creates the corresponding agent.
             for r, row in enumerate(lines):
@@ -54,7 +56,14 @@ class CityModel(Model):
 
                     elif col == "F":
                         agent = Destination(f"d_{r*self.width+c}", self)
+                        self.schedule.add(agent)
                         self.grid.place_agent(agent, (c, self.height - r - 1))
+                        # Agregar las siguientes líneas para imprimir la posición al crear el agente de destino
+                        x, y = agent.pos
+                        self.destinations_positions.append((x, y))
+                        
+                        
+            print(self.destinations_positions)
         
         self.running = True
 

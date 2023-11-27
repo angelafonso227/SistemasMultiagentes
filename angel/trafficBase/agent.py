@@ -19,6 +19,9 @@ class Car(Agent):
         self.direction = 4
         self.steps_taken = 0
         self.eliminated = False  # Variable de estado para indicar si el agente ha sido eliminado
+        randi = random.choice(range(len(model.destinations_positions)))
+        self.destination = model.destinations_positions[randi]
+        print(f"Agente Car creado - ID: {self.unique_id}, Destino: {self.destination}")
 
     def move(self):
         """
