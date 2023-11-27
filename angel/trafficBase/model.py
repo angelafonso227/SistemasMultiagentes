@@ -70,8 +70,8 @@ class CityModel(Model):
     def step(self):
         '''Advance the model by one step.'''
         # Añade un nuevo carro cada 4 pasos
-        if self.schedule.steps % 10 == 0:
-            if self.num_agents <=30:
+        if self.schedule.steps % 4 == 0:
+            if self.num_agents <=3000:
                 self.add_car()
             else: 
                 pass

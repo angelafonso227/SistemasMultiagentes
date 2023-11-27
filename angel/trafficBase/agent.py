@@ -18,11 +18,15 @@ class Car(Agent):
         super().__init__(unique_id, model)
         self.direction = 4
         self.steps_taken = 0
+        self.eliminated = False  # Variable de estado para indicar si el agente ha sido eliminado
 
     def move(self):
         """
         Mueve el agente en la dirección indicada por el agente en la misma celda.
         """
+        if self.eliminated:  # Verificar si el agente ha sido eliminado
+            return
+
         x, y = self.pos  # Obtener la posición actual del agente
 
         # Obtener todos los agentes en la misma celda que el agente Car
@@ -37,7 +41,6 @@ class Car(Agent):
         traffic_light = next((agent for agent in agents_in_same_cell if isinstance(agent, Traffic_Light)), None)
         if traffic_light and not traffic_light.state:  # If there is a red traffic light, do not move
             return
-        
 
         # Mapa de direcciones a desplazamientos en la cuadrícula
         direction_mapping = {
@@ -75,6 +78,12 @@ class Car(Agent):
         else:
             # Mover el agente a la nueva posición en la cuadrícula
             self.model.grid.move_agent(self, new_pos)
+            
+        destination_agent = next((agent for agent in agents_in_same_cell if isinstance(agent, Destination)), None)
+
+        if destination_agent:
+            self.model.grid.remove_agent(self)
+            self.eliminated = True  # Marcar el agente como eliminado
 
     def step(self):
         """ 
