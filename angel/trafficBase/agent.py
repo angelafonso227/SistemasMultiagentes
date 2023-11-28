@@ -71,6 +71,7 @@ class Car(Agent):
         if direction_below == "Down-Left":
             displacement = random.choice([(0, -1), (-1, 0)])
             new_pos = ((x + displacement[0]) % self.model.grid.width, (y + displacement[1]) % self.model.grid.height)
+               
             
 
         # Calcular la nueva posición sumando el desplazamiento

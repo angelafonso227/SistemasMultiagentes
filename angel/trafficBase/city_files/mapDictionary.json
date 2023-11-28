@@ -16,5 +16,9 @@
     "1" : "Up-Left",
     "2" : "Up-Right",
     "3" : "Down-Left",
-    "4" : "Down-Right"
+    "4" : "Down-Right",
+    "9" : "Destino-Up",
+    "8" : "Destino-Down",
+    "7" : "Destino-Left",
+    "6" : "Destino-Right"
 }

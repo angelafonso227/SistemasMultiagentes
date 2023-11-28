@@ -58,7 +58,6 @@ class CityModel(Model):
                         agent = Destination(f"d_{r*self.width+c}", self)
                         self.schedule.add(agent)
                         self.grid.place_agent(agent, (c, self.height - r - 1))
-                        # Agregar las siguientes líneas para imprimir la posición al crear el agente de destino
                         x, y = agent.pos
                         self.destinations_positions.append((x, y))
                         
