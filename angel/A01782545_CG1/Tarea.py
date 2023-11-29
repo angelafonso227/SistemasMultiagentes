@@ -1,3 +1,10 @@
+"""
+Generacion de .obj de una rueda
+Tarea CG1
+Angel Afonso A01782545
+2023-11-28
+"""
+
 import sys
 import math
 
@@ -26,18 +33,7 @@ def generate_model(cant_lados, radio, ancho):
         
         for vertice in vertices:
             file.write(f"v {vertice[0]:.3f} {vertice[1]:.3f} {vertice[2]:.3f} \n")
-            
-        file.write(f"#Normales: {cant_lados + 2} \n")
-        
-        for i in range(cant_lados):
-            angulo = (2 * math.pi * i / cant_lados)
-            x = math.cos(angulo)
-            y = math.sin(angulo)
-            file.write(f"vn {x:.3f} {y:.3f} 0.00000\n")
-        
-        file.write("vn 0.00000 0.00000 1.00000\n")
-        file.write("vn 0.00000 0.00000 -1.00000\n")
-        
+                    
         file.write(f"# Caras: {cant_lados * 2 + 2}\n")
         for i in range(cant_lados):
             Vector1 = (2 * i + 1)
@@ -58,6 +54,18 @@ def generate_model(cant_lados, radio, ancho):
             Vector1 = (2 * i + 2)
             Vector2 = (2 * ((i + 1) % cant_lados) + 2)
             file.write(f"f {len(vertices) - 1}//{cant_lados+2} {Vector1}//{cant_lados+2} {Vector2}//{cant_lados+2}\n")
+            
+        
+        file.write(f"#Normales: {cant_lados + 2} \n")
+        
+        for i in range(cant_lados):
+            angulo = (2 * math.pi * i / cant_lados)
+            x = math.cos(angulo)
+            y = math.sin(angulo)
+            file.write(f"vn {x:.3f} {y:.3f} 0.00000\n")
+        
+        file.write("vn 0.00000 0.00000 1.00000\n")
+        file.write("vn 0.00000 0.00000 -1.00000\n")
 
 # Verifica si el script se está ejecutando directamente
 if __name__ == "__main__":
